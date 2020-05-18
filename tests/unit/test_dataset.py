@@ -6,6 +6,7 @@ import pytest
 
 from utils_nlp.dataset.url_utils import maybe_download
 from utils_nlp.dataset import msrpc
+from utils_nlp.dataset import muse
 from utils_nlp.dataset import wikigold
 from utils_nlp.dataset import xnli
 from utils_nlp.dataset import snli
@@ -190,3 +191,7 @@ def test_CNNDMSummarizationDatasetOrg(tmp):
     assert isinstance(train_iterable_sum_ds, IterableSummarizationDataset)
     assert isinstance(test_iterable_sum_ds, IterableSummarizationDataset)
     assert isinstance(dev_iterable_sum_ds, IterableSummarizationDataset)
+
+def test_muse(tmp_path):
+    dev_df = muse.load_pandas_df(local_cache_path=tmp_path, file_split="test")
+    assert dev_df.shape == (2975, 2)

@@ -6,41 +6,18 @@
 import os
 import zipfile
 
-from gensim.models.fasttext import load_facebook_model
+from gensim.models.keyedvectors import KeyedVectors
 
 from utils_nlp.dataset.url_utils import maybe_download
 from utils_nlp.models.pretrained_embeddings import FASTTEXT_EN_URL
 
-
-def _extract_fasttext_vectors(zip_path, dest_path="."):
-    """ Extracts fastText embeddings from zip file.
-
-    Args:
-        zip_path(str): Path to the downloaded compressed zip file.
-        dest_path(str): Final destination directory path to the extracted zip file.
-        Picks the current working directory by default.
-
-    Returns:
-        str: Returns the absolute path to the extracted folder.
-    """
-
-    if os.path.exists(zip_path):
-        with zipfile.ZipFile(zip_path, "r") as zip_ref:
-            zip_ref.extractall(path=dest_path)
-    else:
-        raise Exception("Zipped file not found!")
-
-    os.remove(zip_path)
-    return dest_path
-
-
-def _download_fasttext_vectors(download_dir, file_name="wiki.simple.zip"):
+def _download_fasttext_vectors(download_dir, file_name="wiki.simple.vec"):
     """ Downloads pre-trained word vectors for English, trained on Wikipedia using
     fastText. You can directly download the vectors from here:
-    https://dl.fbaipublicfiles.com/fasttext/vectors-wiki/wiki.simple.zip
+    https://dl.fbaipublicfiles.com/fasttext/vectors-wiki/wiki.simple.vec
 
     For the full version of pre-trained word vectors, change the url for
-    FASTTEXT_EN_URL to https://dl.fbaipublicfiles.com/fasttext/vectors-wiki/wiki.en.zip
+    FASTTEXT_EN_URL to https://dl.fbaipublicfiles.com/fasttext/vectors-wiki/wiki.en.vec
     in __init__.py
 
     Args:
@@ -73,15 +50,15 @@ def _maybe_download_and_extract(dest_path, file_name):
     if not os.path.exists(file_path):
         if not os.path.exists(dir_path):
             os.makedirs(dir_path)
-        zip_path = _download_fasttext_vectors(dir_path)
-        _extract_fasttext_vectors(zip_path, dir_path)
+        print("Downloading to: ", dir_path, "File: ", file_name)
+        file_path = _download_fasttext_vectors(dir_path, file_name=file_name)
     else:
-        print("Vector file already exists. No changes made.")
+        print("Vector file already exists. No changes made.", file_path)
 
     return file_path
 
 
-def load_pretrained_vectors(dest_path, file_name="wiki.simple.bin"):
+def load_pretrained_vectors(dest_path, file_name="wiki.simple.vec", limit=None):
     """ Method that loads fastText vectors. Downloads if it doesn't exist.
 
     Args:
@@ -90,10 +67,10 @@ def load_pretrained_vectors(dest_path, file_name="wiki.simple.bin"):
         downloaded.
 
     Returns:
-        gensim.models.fasttext.load_facebook_model: Loaded word2vectors
+        gensim.models.keyedvectors.Word2VecKeyedVectors: Loaded word2vectors
 
     """
 
     file_path = _maybe_download_and_extract(dest_path, file_name)
-    model = load_facebook_model(file_path)
+    model = KeyedVectors.load_word2vec_format(file_path, limit=limit)
     return model

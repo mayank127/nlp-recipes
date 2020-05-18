@@ -42,11 +42,12 @@ def test_load_pretrained_vectors_glove(tmp_path):
 
 @pytest.mark.smoke
 def test_load_pretrained_vectors_fasttext(tmp_path):
-    filename = "wiki.simple.bin"
-    model = load_fasttext(tmp_path)
+    filename = "wiki.simple.vec"
+    model = load_fasttext(tmp_path, limit=50000)
     filepath = os.path.join(os.path.join(tmp_path, "fastText"), filename)
     statinfo = os.stat(filepath)
-    assert statinfo.st_size == 2668450750
-    assert isinstance(model, FastText)
+    # assert statinfo.st_size == 2668450750 TODO:
+    assert isinstance(model, Word2VecKeyedVectors)
+    assert len(model.vocab) == 50000
 
 

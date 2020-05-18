@@ -48,12 +48,15 @@ CONDA_BASE = {
     "tensorflow-hub": "tensorflow-hub==0.7.0",
     "dask": "dask[dataframe]==1.2.2",
     "papermill": "papermill==1.2.1",
+    "faiss": "faiss==1.6.3",
 }
 
 CONDA_GPU = {
     "numba": "numba>=0.38.1",
     "cudatoolkit": "cudatoolkit=10.1",
     "pytorch": "pytorch==1.4.0",
+    "tensorflow": "tensorflow-gpu==1.15.0",
+    "faiss": "faiss-gpu==1.6.3",
 }
 
 PIP_BASE = {
@@ -99,6 +102,7 @@ PIP_BASE = {
     "requests": "requests==2.22.0",
     "requests-oauthlib": "requests-oauthlib==1.2.0",
     "regex": "regex==2020.2.20",
+    "pymanopt": "pymanopt==0.2.5",
 }
 
 PIP_GPU = {}
